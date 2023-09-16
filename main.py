@@ -1,16 +1,32 @@
-# This is a sample Python script.
+import afd
+from afd import AFD
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    automaton = afd.load('afd.txt')
+    # automaton = AFD('ab')
+    # for i in range(1, 5):
+    #     automaton.new_state(i)
+    # automaton.set_initial_state(1)
+    automaton.set_final_state(1)
+    automaton.remove_final_state(4)
+    #
+    # automaton.new_transition(1, 2, 'a')
+    # automaton.new_transition(2, 1, 'a')
+    # automaton.new_transition(3, 4, 'a')
+    # automaton.new_transition(4, 3, 'a')
+    # automaton.new_transition(1, 3, 'b')
+    # automaton.new_transition(3, 1, 'b')
+    # automaton.new_transition(2, 4, 'b')
+    # automaton.new_transition(4, 2, 'b')
+    # automaton.save()
+    print(automaton)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    word = ''
+    automaton.init()
+    state = automaton.start(word)
+
+    if automaton.state_is_final(state) and not automaton.error():
+        print(f'Aceita {word}')
+    else:
+        print(f'Rejeita {word}')
+
