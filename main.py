@@ -1,8 +1,7 @@
-import afd
 from afd import AFD
 
 if __name__ == '__main__':
-    automaton = afd.load('afd.txt')
+    automaton = AFD.load('afd.txt')
     # automaton = AFD('ab')
     # for i in range(1, 5):
     #     automaton.new_state(i)
@@ -21,7 +20,7 @@ if __name__ == '__main__':
     # automaton.save()
     print(automaton)
 
-    word = ''
+    word = 'aabb'
     automaton.init()
     state = automaton.start(word)
 

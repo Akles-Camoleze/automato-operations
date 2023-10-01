@@ -1,31 +1,4 @@
-def load(filename):
-    try:
-        with open(filename, 'r') as file:
-            lines = file.readlines()
-
-        automaton = AFD(lines[0].strip()[1:])
-
-        for state, line in enumerate(lines[1:], start=1):
-            line = line.strip()
-            automaton.new_state(state)
-            if line.startswith(">"):
-                automaton.set_initial_state(state)
-            elif line.startswith("*"):
-                automaton.set_initial_state(state)
-                automaton.set_final_state(state)
-            elif line.startswith("."):
-                automaton.set_final_state(state)
-
-            for i, symbol in enumerate(automaton.alphabet):
-                end_state = int(line[i + 1])
-                automaton.new_state(end_state)
-                automaton.new_transition(state, end_state, symbol)
-
-        print(f"'{filename}' carregado com sucesso.")
-        return automaton
-
-    except Exception as e:
-        print(f"Erro ao carregar o autômato: {str(e)}")
+# from automaton_operations import AutomatonOperations
 
 
 class AFD:
@@ -53,10 +26,10 @@ class AFD:
         self.__currState = self.initialState
 
     def state_exists(self, id) -> bool:
-        return id in self.states
+        return int(id) in self.states
 
     def state_is_final(self, id) -> bool:
-        return id in self.finalStates
+        return int(id) in self.finalStates
 
     def new_state(self, id, initial=False, final=False) -> bool:
         id = int(id)
@@ -70,24 +43,28 @@ class AFD:
         return True
 
     def set_initial_state(self, id) -> bool:
+        id = int(id)
         if not self.state_exists(id):
             return False
         self.initialState = id
         return True
 
     def set_final_state(self, id) -> bool:
+        id = int(id)
         if not self.state_exists(id) or self.state_is_final(id):
             return False
         self.finalStates.add(id)
         return True
 
     def remove_final_state(self, id) -> bool:
+        id = int(id)
         if not self.state_exists(id) or not self.state_is_final(id):
             return False
         self.finalStates.remove(id)
         return True
 
     def transition_exists(self, start_id, symbol):
+        start_id, symbol = int(start_id), str(symbol)
         return (start_id, symbol) in self.transitions
 
     def new_transition(self, start_id, end_id, symbol):
@@ -100,6 +77,7 @@ class AFD:
         return True
 
     def remove_transition(self, start_id, symbol):
+        start_id, symbol = int(start_id), str(symbol)
         if not self.transition_exists(start_id, symbol):
             return False
         self.transitions.pop((start_id, symbol))
@@ -149,3 +127,33 @@ class AFD:
             print(f"Autômato salvo em '{filename}' com sucesso.")
         except Exception as e:
             print(f"Erro ao salvar o autômato: {str(e)}")
+
+    @staticmethod
+    def load(filename):
+        try:
+            with open(filename, 'r') as file:
+                lines = file.readlines()
+
+            automaton = AFD(lines[0].strip()[1:])
+
+            for state, line in enumerate(lines[1:], start=1):
+                line = line.strip()
+                automaton.new_state(state)
+                if line.startswith(">"):
+                    automaton.set_initial_state(state)
+                elif line.startswith("*"):
+                    automaton.set_initial_state(state)
+                    automaton.set_final_state(state)
+                elif line.startswith("."):
+                    automaton.set_final_state(state)
+
+                for i, symbol in enumerate(automaton.alphabet):
+                    end_state = int(line[i + 1])
+                    automaton.new_state(end_state)
+                    automaton.new_transition(state, end_state, symbol)
+
+            print(f"'{filename}' carregado com sucesso.")
+            return automaton
+
+        except Exception as e:
+            print(f"Erro ao carregar o autômato: {str(e)}")
